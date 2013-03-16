@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>SelfEvaluation - 课堂前预习情况自我检测系统</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('css/rest.css') }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('add-on/blackbox/css/blackbox.css') }}">
+    <script type="text/javascript" src="{{ static_url('add-on/jquery-1.9.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/blackbox/js/jquery.blackbox.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/jquery.placeholder.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/common.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/index.js') }}"></script>
+</head>
+<body>
+
+<div id="index_wrap">
+
+    <div id="index_content">
+        <div class="content">
+
+            <h1 id="index_logo">
+                SelfEvaluation
+            </h1>
+
+            <h2 id="index_slogan">
+                课堂前预习情况自我检测系统
+            </h2>
+
+            <form method="post" action="" id="login_form">
+
+                <ul>
+                    <li>
+                        <label>
+                            <input name="email" id="login_email" type="text" validate="required email"
+                                   placeholder="登录邮箱"
+                                   tabindex="1">
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            <input name="password" id="login_psw" type="password" validate="required" placeholder="登录密码"
+                                   tabindex="2">
+                        </label>
+                    </li>
+                    <li class="button">
+                        <button id="login_do" type="button" tabindex="3">登 录</button>
+                    </li>
+                    <li>
+
+                        <a href="#" id="register_action">注册</a>
+                    </li>
+                    <li>
+                        <a href="#" id="password_action">忘记密码?</a>
+                    </li>
+                </ul>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <p class="copyright">@2013 <a href="http://vincenting.com" target="_blank">Vincent Ting</a>
+    </p>
+
+    <div id="index_bg">
+        <span id="footer_tile"></span>
+    </div>
+
+    <div id="register_template" class="template">
+
+        <form method="post" action="" id="register_form">
+
+            <h2>
+                注册 @ SelfEvaluation
+            </h2>
+
+            <p>通过信息门户验证之后会自动登录，帐号初始密码与信息门户密码一致</p>
+
+            <label>
+                <input name="password" id="class_key" type="text" validate="required" placeholder="课堂验证码">
+            </label>
+
+            <label>
+                <input name="email" id="register_email" validate="required email" type="text" placeholder="登录邮箱">
+            </label>
+
+            <label>
+                <input name="password" id="ccnu_id" type="text" validate="required ccnu_id" placeholder="信息门户学号">
+            </label>
+
+            <label>
+                <input name="password" id="ccnu_psw" type="password" validate="required" placeholder="信息门户密码">
+            </label>
+
+            <button id="register_do" type="button">注 册</button>
+            <button id="register_cancel" type="button" class="cancel">取 消</button>
+
+        </form>
+    </div>
+
+    <div id="password_template" class="template">
+
+        <form method="post" action="" id="password_form">
+
+            <h2>
+                密码重置 @ SelfEvaluation
+            </h2>
+
+            <p>通过信息门户验证之后会将你的密码重置为信息门户密码</p>
+
+            <label>
+                <input name="password" id="ccnu_id_rest" type="text" validate="required ccnu_id" placeholder="信息门户学号">
+            </label>
+
+            <label>
+                <input name="password" id="ccnu_psw_rest" type="password" validate="required" placeholder="信息门户密码">
+            </label>
+
+            <button id="password_do" type="button">重 置</button>
+            <button id="password_cancel" type="button" class="cancel">取 消</button>
+
+        </form>
+    </div>
+
+    {% module xsrf_form_html() %}
+
+</div>
+
+</body>
+</html>

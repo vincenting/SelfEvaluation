@@ -3,3 +3,4 @@ mysql-python
 redis==2.7.2
 sqlalchemy
 pyOpenSSL
+markdown

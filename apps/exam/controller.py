@@ -12,6 +12,9 @@ class IndexHandler(BaseHandler):
         if not self.get_current_user():
             self.render("login.html")
             return True
+        if self.get_argument("redirect",None):
+            self.redirect(self.get_argument("redirect"))
+            return True
         self.write(self.get_current_user()['username'])
 
     post = get

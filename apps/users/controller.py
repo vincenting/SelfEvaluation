@@ -9,6 +9,7 @@ from .models import CCNUAuth
 
 CLASS_KEY = "CuiLanQiao"
 
+
 def loginDo(handler):
     if handler.get_current_user():
         handler.write("0")
@@ -29,7 +30,7 @@ def logoutDo(handler):
 
 
 def registerDo(handler):
-    (email, ccnu_id, password,class_key) = (
+    (email, ccnu_id, password, class_key) = (
         handler.get_argument("email", None),
         handler.get_argument("ccnu_id", None),
         handler.get_argument("password", None),

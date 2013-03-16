@@ -8,7 +8,7 @@ import os
 
 define("port", default=8000, help="http port", type=int)
 define("cookie_secret", default="3hyh4hy3hy4Itgtthhyhyoiqwe78HUHUI787")
-define("login_url",default="/login.do")
+define("login_url",default="/")
 define("db",default="mysql")
 
 if 'VCAP_SERVICES' in os.environ:

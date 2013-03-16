@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}SelfEvaluation Admin - 课堂前预习情况自我检测系统{% end %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('add-on/blackbox/css/blackbox.css') }}">
+    <link rel="stylesheet" type="text/css" media="screen"
+          href="{{ static_url('add-on/bootstrap/css/bootstrap.min.css') }}">
+    <script type="text/javascript" src="{{ static_url('add-on/jquery-1.9.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/blackbox/js/jquery.blackbox.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/bootstrap/js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+<div class="container">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <a class="brand" href="/admin">SelfEvaluation - Admin</a>
+
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li
+                        {% if handler.current_nav == 'index' %}
+                        class="active"
+                        {% end %}
+                        ><a href="/admin">首页</a></li>
+                        <li
+                        {% if handler.current_nav == 'bank' %}
+                        class="active"
+                        {% end %}
+                        ><a href="/admin/bank">题库编辑</a></li>
+                        <li><a href="#">学生列表</a></li>
+                        <li><a href="#">预习统计</a></li>
+                        <li><a href="#">帐号管理</a></li>
+                    </ul>
+                </div>
+                <form class="navbar-form pull-right">
+                    <input type="text" class="span2" placeholder="输入学生的学号">
+                    <button type="submit" class="btn">查看</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}
+
+    {% end %}
+
+    {% module xsrf_form_html() %}
+
+</div>
+</body>
+<script type="text/javascript" src="{{ static_url('js/admin.js') }}"></script>
+</html>

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="/admin/bank">根</a> <span class="divider">/</span></li>
+</ul>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>章列表</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for chapter in allChapters %}
+    <tr id="item_{{ chapter.chapter_id }}">
+        <td><a href="?list=chapter&id={{ chapter.chapter_id }}">{{ chapter.chapter_name }}</a></td>
+        <th><a href="#" class="update">修改</a>/<a href="#" class="delete">删除</a></th>
+    </tr>
+    {% end %}
+    </tbody>
+</table>
+<a class="btn btn-small btn-primary" id="create_new" type="button" href="#">新建章</a>
+<script type="text/javascript">
+    var current = "bank",
+            show_list = "chapters";
+</script>
+
+{% end %}

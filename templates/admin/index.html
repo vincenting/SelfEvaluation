@@ -1,1 +1,68 @@
 {% extends "base.html" %}
+
+{% block content %}
+
+<div class="well well-large">
+    SelfEvaluation 是一套课堂前预习情况自我检测系统。在这里选择当前需要复习章节后，同学登录后如果没有预习过，可以选择
+    进行预习，或者选择去讨论区讨论。预习题目默认为4题。
+</div>
+
+{% if not current_section %}
+
+<form class="form-horizontal" action="" method="post">
+    <div class="control-group">
+        <input type="hidden" name="action" value="set_current">
+
+        <label class="control-label" for="current_section">选择当前要预习的章节 </label>
+
+        <div class="controls">
+            <select id="current_section" name="current_section" class="input-block-level">
+                {% for section in all_sections %}
+                <option value="{{ section.section_id }}">{{ section.chapter.chapter_name }} - {{ section.section_name
+                    }}
+                </option>
+                {% end %}
+            </select>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">确定</button>
+        </div>
+    </div>
+    {% module xsrf_form_html() %}
+</form>
+
+{% else %}
+
+<p>
+    当前选择预习：{{ current_section.chapter.chapter_name }} - {{ current_section.section_name }}
+</p>
+<p>
+    <a href="#" class="btn btn-danger" id="current_rest">停止</a>
+</p>
+<div class="well well-small">
+    当前预习统计
+</div>
+<table class="table table-hover">
+    <tbody>
+    <tr>
+        <th>当前完成预习人数</th>
+        <th>20/30</th>
+        <th>当前总预习正确率</th>
+        <th>50%</th>
+    </tr>
+    <tr>
+        <th>当前预习发帖总数</th>
+        <th>3</th>
+        <th>当前预习回帖总数</th>
+        <th>13</th>
+    </tr>
+    </tbody>
+</table>
+{% end %}
+
+<script type="text/javascript">
+    var current = "admin";
+</script>
+{% end %}

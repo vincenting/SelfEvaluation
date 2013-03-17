@@ -56,6 +56,22 @@
             })
 
         })();
+    };
+
+    if (window.current === "admin") {
+        (function(){
+            $("#current_rest").click(function(){
+                box.confirm("停止将将当前章节设为已结束，可能将影响当前正在预习的学生",function(data){
+                    if(data){
+                        window.location.href = "?action=current_rest";
+                    }
+                },{
+                    title:'真的要停止么',
+                    value:'停止'
+                })
+                return false;
+            })
+        })();
     }
 
 }).call(window);

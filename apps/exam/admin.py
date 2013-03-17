@@ -12,6 +12,9 @@ class BankHandler(BaseHandler):
 
     @authenticated
     def get(self):
+        if not self.get_current_user()['is_teacher']:
+            self.write_error(403)
+            return True
 
         type2Model = {
             'chapter': ChapterModel,
@@ -26,10 +29,6 @@ class BankHandler(BaseHandler):
             'section': SubjectModel,
             'subject': ChoiceModel
         }
-
-        if not self.get_current_user()['is_teacher']:
-            self.write_error(403)
-            return True
 
         #首页没有parent参数时默认显示所有章
         if not self.get_argument("parent", None) and not self.get_argument("type", None):

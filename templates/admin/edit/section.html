@@ -1,0 +1,53 @@
+{% extends "../base.html" %}
+
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="/admin/bank">根</a> <span class="divider">/</span></li>
+    {% if parent %}
+    <li><a href="?parent=chapter&parent_id={{ parent.chapter.chapter_id }}">{{ parent.chapter.chapter_name }}</a> <span
+            class="divider">/</span></li>
+    <li><a href="?parent=section&parent_id={{ parent.section_id }}">{{ parent.section_name }}</a> <span
+            class="divider">/</span></li>
+    {% end %}
+    {% if item %}
+    <li><a href="?parent=chapter&parent_id={{ item.section.chapter.chapter_id }}">{{ item.section.chapter.chapter_name }}</a> <span
+            class="divider">/</span></li>
+    <li><a href="?parent=section&parent_id={{ item.section.section_id }}">{{ item.section.section_name }}</a> <span
+            class="divider">/</span></li>
+    {% end %}
+
+</ul>
+
+<p>{{ '新建' if not item else '更新' }} 题目</p>
+
+<form class="form-horizontal" action="" method="post">
+
+    {% if item %}
+    <input type="hidden" name="parent_id" value="{{ item.section.section_id }}">
+    <input type="hidden" name="parent_section_id" value="{{ item.section.section_id }}">
+    {% end %}
+    {% if parent %}
+    <input type="hidden" name="parent_section_id" value="{{ parent.section_id }}">
+    {% end %}
+    <input type="hidden" name="target" value="subjects">
+
+    <div class="control-group">
+        <label class="control-label" for="subject_content">题目内容</label>
+
+        <div class="controls">
+            <textarea class="input-block-level" id="subject_content" rows="5" required name="subject_content"
+                      placeholder="题目内容">{{ item.subject_content if item else '' }}</textarea>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">{{ '新建' if not item else '更新' }}</button>
+        </div>
+    </div>
+    {% module xsrf_form_html() %}
+</form>
+
+{% end %}

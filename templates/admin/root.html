@@ -15,15 +15,15 @@
     </tr>
     </thead>
     <tbody>
-    {% for chapter in allChapters %}
+    {% for chapter in chapters %}
     <tr id="item_{{ chapter.chapter_id }}">
-        <td><a href="?list=chapter&id={{ chapter.chapter_id }}">{{ chapter.chapter_name }}</a></td>
-        <th><a href="#" class="update">修改</a>/<a href="#" class="delete">删除</a></th>
+        <td><a href="?parent=chapter&parent_id={{ chapter.chapter_id }}">{{ chapter.chapter_name }}</a></td>
+        <th><a href="?parent=root&action=update&id={{ chapter.chapter_id }}" class="update">修改</a>/<a href="#" class="delete">删除</a></th>
     </tr>
     {% end %}
     </tbody>
 </table>
-<a class="btn btn-small btn-primary" id="create_new" type="button" href="#">新建章</a>
+<a class="btn btn-small btn-primary" id="create_new" type="button" href="?parent=root&action=create">新建章</a>
 <script type="text/javascript">
     var current = "bank",
             show_list = "chapters";

@@ -1,0 +1,78 @@
+{% extends "../base.html" %}
+
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="/admin/bank">根</a> <span class="divider">/</span></li>
+    {% if parent %}
+    <li><a href="?parent=chapter&parent_id={{ parent.section.chapter.chapter_id }}">{{
+        parent.section.chapter.chapter_name
+        }}</a> <span class="divider">/</span></li>
+    <li><a href="?parent=section&parent_id={{ parent.section.section_id }}">{{ parent.section.section_name }}</a> <span
+            class="divider">/</span></li>
+    <li><a href="?parent=subject&parent_id={{ parent.subject_id }}">{{ parent.subject_content }}</a> <span
+            class="divider">/</span></li>
+    {% end %}
+    {% if item %}
+    <li><a href="?parent=chapter&parent_id={{ item.subject.section.chapter.chapter_id }}">{{
+        item.subject.section.chapter.chapter_name
+        }}</a> <span class="divider">/</span></li>
+    <li><a href="?parent=section&parent_id={{ item.subject.section.section_id }}">{{ item.subject.section.section_name
+        }}</a> <span
+            class="divider">/</span></li>
+    <li><a href="?parent=subject&parent_id={{ item.subject.subject_id }}">{{ item.subject.subject_content }}</a> <span
+            class="divider">/</span></li>
+    {% end %}
+
+</ul>
+
+<p>{{ '新建' if not item else '更新' }} 选项</p>
+
+<form class="form-horizontal" action="" method="post">
+
+    {% if item %}
+    <input type="hidden" name="parent_id" value="{{ item.subject.subject_id }}">
+    <input type="hidden" name="parent_subject_id" value="{{ item.subject.subject_id }}">
+    {% end %}
+    {% if parent %}
+    <input type="hidden" name="parent_subject_id" value="{{ parent.subject_id }}">
+    {% end %}
+    <input type="hidden" name="target" value="choices">
+
+    <div class="control-group">
+        <label class="control-label" for="choice_content">选项内容</label>
+
+        <div class="controls">
+            <textarea class="input-block-level" id="choice_content" rows="5" required name="choice_content"
+                      placeholder="选项内容">{{ item.choice_content if item else '' }}</textarea>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="choice_correct">正确答案？</label>
+
+        <div class="controls">
+            <input type="checkbox" id="choice_correct" name="choice_correct" value="1">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">{{ '新建' if not item else '更新' }}</button>
+        </div>
+    </div>
+    {% module xsrf_form_html() %}
+</form>
+
+<script type="text/javascript">
+    var choice_correct = {{ 'true' if item and item.choice_correct else 'false' }};
+    $(document).ready(function(){
+        if(choice_correct){
+            $("#choice_correct")[0].checked = true;
+        }
+    })
+
+</script>
+
+{% end %}

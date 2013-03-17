@@ -1,0 +1,31 @@
+{% extends "../base.html" %}
+
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="/admin/bank">根</a> <span class="divider">/</span></li>
+</ul>
+
+<p>{{ '新建' if not item else '更新' }} 章</p>
+
+<form class="form-horizontal" action="" method="post">
+
+    <input type="hidden" name="target" value="chapters">
+
+    <div class="control-group">
+        <label class="control-label" for="chapter_name">标题</label>
+
+        <div class="controls">
+            <input type="text" class="input-block-level" value="{{ item.chapter_name if item else '' }}" required name="chapter_name" id="chapter_name" placeholder="章的标题">
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">{{ '新建' if not item else '更新' }}</button>
+        </div>
+    </div>
+    {% module xsrf_form_html() %}
+</form>
+
+{% end %}

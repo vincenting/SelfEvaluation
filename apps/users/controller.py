@@ -7,7 +7,7 @@ from core.web import BaseHandler
 from .models import CCNUAuth
 
 
-CLASS_KEY = "CuiLanQiao"
+CLASS_KEY = "Wendy"
 
 
 def loginDo(handler):

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="/admin/bank">根</a> <span class="divider">/</span></li>
+    <li><a href="?parent=chapter&parent_id={{ parent.section.chapter.chapter_id }}">{{ parent.section.chapter.chapter_name
+        }}</a> <span class="divider">/</span></li>
+    <li><a href="?parent=section&parent_id={{ parent.section.section_id }}">{{ parent.section.section_name }}</a> <span
+            class="divider">/</span></li>
+    <li><a href="?parent=subject&parent_id={{ parent.subject_id }}">{{ parent.subject_content }}</a> <span
+            class="divider">/</span></li>
+</ul>
+
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>题目列表</th>
+        <th>是否正确</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for choice in parent.choices %}
+    <tr id="item_{{ choice.choice_id }}">
+        <td>{{ choice.choice_content }}</td>
+        <th>{{ '是' if choice.choice_correct else '否' }}</th>
+        <th><a href="?parent=subject&action=update&id={{ choice.choice_id }}" class="update">修改</a>/<a href="#" class="delete">删除</a></th>
+    </tr>
+    {% end %}
+    </tbody>
+</table>
+<a class="btn btn-small btn-primary" id="create_new" type="button" href="?parent=subject&action=create&parent_id={{ parent.subject_id }}">新建选项</a>
+<script type="text/javascript">
+    var current = "bank",
+            show_list = "choices";
+</script>
+
+{% end %}

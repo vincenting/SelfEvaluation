@@ -32,8 +32,8 @@
                                 if (data == "1") {
                                     location.reload();
                                 } else {
-                                    box.alert("新建失败，请检查输入后重新提交", {
-                                        title: "新建失败"
+                                    box.alert("删除失败，请检查输入后重新提交", {
+                                        title: "删除失败"
                                     });
                                 }
                             }).always(function () {

@@ -1,0 +1,56 @@
+{% extends "../base.html" %}
+
+
+{% block content %}
+
+<ul class="breadcrumb">
+    <li><a href="/admin/bank">根</a> <span class="divider">/</span></li>
+    {% if parent %}
+    <li><a href="?parent=chapter&parent_id={{ parent.chapter_id }}">{{ parent.chapter_name }}</a> <span
+            class="divider">/</span></li>
+    {% end %}
+    {% if item %}
+    <li><a href="?parent=chapter&parent_id={{ item.chapter.chapter_id }}">{{ item.chapter.chapter_name }}</a> <span
+            class="divider">/</span></li>
+    {% end %}
+
+</ul>
+
+<p>{{ '新建' if not item else '更新' }} 节</p>
+
+<form class="form-horizontal" action="" method="post">
+
+    {% if item %}
+    <input type="hidden" name="parent_id" value="{{ item.chapter.chapter_id }}">
+    <input type="hidden" name="parent_chapter_id" value="{{ item.chapter.chapter_id }}">
+    {% end %}
+    {% if parent %}
+    <input type="hidden" name="parent_chapter_id" value="{{ parent.chapter_id }}">
+    {% end %}
+    <input type="hidden" name="target" value="sections">
+
+    <div class="control-group">
+        <label class="control-label" for="section_name">标题</label>
+
+        <div class="controls">
+            <input type="text" class="input-block-level" value="{{ item.section_name if item else '' }}" required
+                   name="section_name" id="section_name" placeholder="节的标题">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="section_markdown">节的简介（支持markdown语法）</label>
+
+        <div class="controls">
+            <textarea class="input-block-level" id="section_markdown" rows="15" cols="40" required name="section_markdown"
+                      placeholder="节的简介">{{ item.section_markdown if item else '' }}</textarea>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn">{{ '新建' if not item else '更新' }}</button>
+        </div>
+    </div>
+    {% module xsrf_form_html() %}
+</form>
+
+{% end %}

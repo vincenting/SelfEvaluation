@@ -12,7 +12,7 @@ from markdown import markdown
 class ChapterModel(BaseModel):
     __tablename__ = 'chapters'
     chapter_id = Column(Integer, primary_key=True)
-    chapter_name = Column(String(150), nullable=False, unique=True)
+    chapter_name = Column(String(150), nullable=False)
 
     def __init__(self, chapter_name):
         self.chapter_name = chapter_name
@@ -24,21 +24,18 @@ class ChapterModel(BaseModel):
 class SectionModel(BaseModel):
     __tablename__ = 'sections'
     section_id = Column(Integer, primary_key=True)
-    section_name = Column(String(150), nullable=False, unique=True)
+    section_name = Column(String(150), nullable=False)
     section_markdown = Column(Text(), nullable=False)
     section_introduction = Column(Text(), nullable=False)
     section_status = Column(Integer,nullable=False,default=0)
     parent_chapter_id = Column(Integer, ForeignKey('chapters.chapter_id'))
     chapter = relationship("ChapterModel", backref=backref('sections', order_by=section_id))
 
-    def __init__(self, section_name, section_introduction, parent_chapter_id):
+    def __init__(self, section_name, section_markdown, parent_chapter_id):
         self.section_name = section_name
-        self.section_introduction = markdown(section_introduction, output_format='html4')
+        self.section_markdown = section_markdown
+        self.section_introduction = markdown(section_markdown, output_format='html4')
         self.parent_chapter_id = parent_chapter_id
-
-    def setIntroduction(self, section_introduction):
-        self.section_markdown = section_introduction
-        self.section_introduction = markdown(section_introduction, output_format='html4')
 
     def __str__(self):
         return "<Section('{0}')>".format(self.section_name)
@@ -67,9 +64,10 @@ class ChoiceModel(BaseModel):
     parent_subject_id = Column(Integer, ForeignKey('subjects.subject_id'))
     subject = relationship("SubjectModel", backref=backref('choices', order_by=choice_id))
 
-    def __init__(self, choice_content, parent_subject_id):
+    def __init__(self, choice_content, parent_subject_id,choice_correct):
         self.choice_content = choice_content
         self.parent_subject_id = parent_subject_id
+        self.choice_correct = choice_correct
 
     def __str__(self):
         return "<Choice('{0}')>".format(self.choice_content)

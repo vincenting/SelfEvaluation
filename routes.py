@@ -4,8 +4,9 @@
 __author__ = 'Vincent Ting'
 
 from apps.exam.controller import IndexHandler
+from apps.exam.admin import BankHandler
 from apps.users.controller import AccountHandler
-from apps.admin.controller import BankHandler,AdminHandler
+from apps.admin.controller import AdminHandler
 
 routes = [
     (r"/", IndexHandler),

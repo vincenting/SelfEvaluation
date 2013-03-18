@@ -42,6 +42,5 @@ class AdminHandler(BaseHandler):
                 if new_section:
                     self.db.query(SectionModel).get(new_section).section_status = 1
                     self.db.commit()
-
         self.redirect("/admin")
         return True

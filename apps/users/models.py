@@ -6,7 +6,6 @@ __author__ = 'Vincent Ting'
 from datetime import datetime
 from core.models import BaseModel
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
-from core.models import redisConn
 import urllib2, urllib, re, cookielib
 
 
@@ -90,11 +89,6 @@ class UserModel(BaseModel):
 
 
 USER_LOGIN_COOKIE = "current_id"
-USER_REDIS_KEY = "_us"
-
-
-def getUserRedisKey(user_id):
-    return "{0}{1}".format(USER_REDIS_KEY, user_id)
 
 
 class UserHandler():
@@ -108,15 +102,10 @@ class UserHandler():
         :param user_id:
         :return:
         """
-        data = redisConn.hgetall(getUserRedisKey(user_id))
-        if data:
-            data['user_id'] = int(data['user_id'])
-            data['is_teacher'] = int(data['is_teacher'])
-            return data
         current_user = self.db.query(UserModel).get(user_id)
         if not current_user:
             return None
-        data = {
+        return {
             'user_id': current_user.user_id,
             'username': current_user.username,
             'email': current_user.email,
@@ -124,21 +113,14 @@ class UserHandler():
             'is_teacher': 1 if current_user.is_teacher else 0
 
         }
-        redisConn.hmset(getUserRedisKey(user_id), data)
-        redisConn.expire(getUserRedisKey(user_id), 7200)
-        return data
 
     def auth(self):
         """
         验证当前cookie和session，成功返回用户资料字典，否则返回false
         :return:
         """
-        current_user = self.requestHandler.session["user_id"]
-        if current_user:
-            return self.getUserInfoById(current_user)
         current_user = self.requestHandler.get_secure_cookie(USER_LOGIN_COOKIE, None)
         if current_user:
-            self.requestHandler.session["user_id"] = current_user
             return self.getUserInfoById(current_user)
         return False
 
@@ -159,7 +141,6 @@ class UserHandler():
             current_user = self.db.query(UserModel).filter_by(username=username).first()
         if not current_user or not current_user.psw_result == encryptPws(password, current_user.psw_salt):
             return False
-        self.requestHandler.session["user_id"] = current_user.user_id
         self.requestHandler.set_secure_cookie(USER_LOGIN_COOKIE, str(current_user.user_id), expires_days=120)
         return True
 
@@ -217,6 +198,5 @@ class UserHandler():
         退出登录状态
         :return:
         """
-        del self.requestHandler.session["user_id"]
         self.requestHandler.clear_cookie(USER_LOGIN_COOKIE)
         return True

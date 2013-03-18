@@ -8,7 +8,6 @@ import hashlib
 import tornado.web
 from sqlalchemy.orm import scoped_session, sessionmaker
 from .models import engine
-from .session import Session
 from apps.users.models import UserHandler
 
 
@@ -16,7 +15,6 @@ class BaseHandler(tornado.web.RequestHandler):
     def initialize(self):
         tornado.web.RequestHandler.initialize(self)
         self.db = scoped_session(sessionmaker(bind=engine))
-        self.session = Session(self)
         self.userHandler = UserHandler(self)
         self.user = self.userHandler.auth()
 

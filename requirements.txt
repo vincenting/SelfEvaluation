@@ -1,6 +1,5 @@
 tornado==2.4.1
 mysql-python
-redis==2.7.2
 sqlalchemy
 pyOpenSSL
 markdown

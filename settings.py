@@ -19,16 +19,11 @@ if 'VCAP_SERVICES' in os.environ:
     vcap_services = json.loads(os.environ['VCAP_SERVICES'])
     # XXX: avoid hardcoding here
     mysql_srv = vcap_services['mysql-5.1'][0]
-    redis_srv = vcap_services['redis-2.2'][0]
     mysql_cred = mysql_srv['credentials']
-    redis_cred = redis_srv['credentials']
     define("db_host", default=mysql_cred['hostname'], help="mysql server")
     define("db_name", default=mysql_cred['name'], help="database name")
     define("db_user", default=mysql_cred['user'], help="database user")
     define("db_pass", default=mysql_cred['password'], help="database password")
-    define("redis_host", default=redis_cred['hostname'], help="mysql server")
-    define("redis_port", default=redis_cred['port'], help="database password")
-    define("redis_pass", default=redis_cred['password'], help="database password")
 
 else:
     define("debug", default=True, help="debug mode", type=bool)
@@ -36,9 +31,6 @@ else:
     define("db_name", default="preview_exam", help="database name")
     define("db_user", default="root", help="database user")
     define("db_pass", default="930309", help="database password")
-    define("redis_host", default="localhost", help="redis server")
-    define("redis_port", default=6379, help="redis port")
-    define("redis_pass", default=None, help="database password")
 
 
 settings = dict(

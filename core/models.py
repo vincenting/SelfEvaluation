@@ -6,7 +6,6 @@ __author__ = 'Vincent Ting'
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from tornado.options import options
-import redis
 
 engine = create_engine("{0}://{1}:{2}@{3}/{4}?charset=utf8".format(
     options.db,
@@ -17,7 +16,3 @@ engine = create_engine("{0}://{1}:{2}@{3}/{4}?charset=utf8".format(
 ), echo=False)
 
 BaseModel = declarative_base()
-
-redisConn = redis.StrictRedis(host=options.redis_host,
-                              port=options.redis_port,
-                              password=options.redis_pass)

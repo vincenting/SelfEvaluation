@@ -350,11 +350,10 @@
         $(document).bind('keydown.fb',
             function (e) {
                 var $BlackBoxContent = $(".BlackBoxContent");
+                if (!$BlackBoxContent[0])return;
                 if (e.keyCode == 13) {
-                    e.preventDefault();
                     $BlackBoxContent.find(".submit").click();
                 } else if (e.keyCode == 27) {
-                    e.preventDefault();
                     var button = $BlackBoxContent.find(".close")[0] || $BlackBoxContent.find(".cancel")[0] || $BlackBoxContent.find(".submit")[0];
                     if (button) {
                         $(button).click();

@@ -5,8 +5,9 @@ __author__ = 'Vincent Ting'
 
 from datetime import datetime
 from core.models import BaseModel
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
-import urllib2, urllib, re, cookielib
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey, Date, BigInteger
+from sqlalchemy.orm import relationship, backref
+import urllib2, urllib, re, cookielib, time
 
 
 def CCNUAuth(su_id=None, su_psw=None, get_name=False):
@@ -88,6 +89,20 @@ class UserModel(BaseModel):
         return "<User({0},{1},{2})>".format(self.username, self.email, self.create_date)
 
 
+class OnlineRecordModel(BaseModel):
+    __tablename__ = "user_online_time"
+    record_id = Column(Integer, primary_key=True)
+    record_date = Column(Date, nullable=False, default=datetime.now().strftime('%Y-%m-%d'))
+    total_time = Column(BigInteger, nullable=False, default=180)
+    last_update = Column(BigInteger, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.user_id'))
+    user = relationship("UserModel", backref=backref('online_recodes', order_by=record_id))
+
+    def __init__(self, user_id):
+        self.user_id = user_id
+        self.last_update = int(time.time())
+
+
 USER_LOGIN_COOKIE = "current_id"
 
 
@@ -95,6 +110,19 @@ class UserHandler():
     def __init__(self, requestHandler):
         self.requestHandler = requestHandler
         self.db = self.requestHandler.db
+
+    def updateOnlineRecord(self):
+        user_id = self.requestHandler.get_current_user()['user_id']
+        today = datetime.now().strftime('%Y-%m-%d')
+        record = self.db.query(OnlineRecordModel).filter_by(user_id=user_id, record_date=today).first()
+        if not record:
+            record = OnlineRecordModel(user_id)
+            self.db.add(record)
+        else:
+            now = int(time.time())
+            record.total_time += min(180, now - record.last_update)
+            record.last_update = now
+        self.db.commit()
 
     def getUserInfoById(self, user_id):
         """
@@ -157,7 +185,7 @@ class UserHandler():
         new_user.sex = sex
         new_user.ccnu_id = ccnu_id
         new_user.room = room
-        self.db.merge(new_user)
+        self.db.add(new_user)
         try:
             self.db.commit()
             return True
@@ -168,7 +196,7 @@ class UserHandler():
         new_user = UserModel(username=username.lower(), email=email.lower())
         new_user.setPassword(password)
         new_user.is_teacher = True
-        self.db.merge(new_user)
+        self.db.add(new_user)
         try:
             self.db.commit()
             return True
@@ -178,7 +206,6 @@ class UserHandler():
     def setPassword(self, ccnu_id, newPsw):
         current_user = self.db.query(UserModel).filter_by(ccnu_id=ccnu_id).first()
         current_user.setPassword(newPsw)
-        self.db.merge(current_user)
         try:
             self.db.commit()
             return True

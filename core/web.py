@@ -17,6 +17,8 @@ class BaseHandler(tornado.web.RequestHandler):
         self.db = scoped_session(sessionmaker(bind=engine))
         self.userHandler = UserHandler(self)
         self.user = self.userHandler.auth()
+        if self.user and not self.user['is_teacher']:
+            self.userHandler.updateOnlineRecord()
 
     def get_current_user(self):
         return self.user

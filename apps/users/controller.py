@@ -6,7 +6,6 @@ __author__ = 'Vincent Ting'
 from core.web import BaseHandler
 from .models import CCNUAuth
 
-
 CLASS_KEY = "Wendy"
 
 

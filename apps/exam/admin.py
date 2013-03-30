@@ -5,6 +5,8 @@ __author__ = 'Vincent Ting'
 
 from core.web import BaseHandler, authenticated
 from .models import *
+import cStringIO
+from json import loads, dumps
 
 
 class BankHandler(BaseHandler):
@@ -53,17 +55,23 @@ class BankHandler(BaseHandler):
             self.write_error(404)
             return True
 
+        img = None
+
         if self.get_argument("action", None) == "create":
             self.render("admin/edit/{0}.html".format(self.get_argument("parent", "")),
-                        item=None, parent=parent)
+                        item=None, img=img, parent=parent)
             return True
 
         item = self.db.query(type2ChildModel.get(self.get_argument("parent", None), ChapterModel)).get(
             self.get_argument("id", 0))
+        try:
+            if item.img:
+                img = loads(item.img)
+        except AttributeError:
+            pass
         self.render("admin/edit/{0}.html".format(self.get_argument("parent", "")),
-                    item=item, parent=None)
+                    item=item, img=img, parent=None)
         return True
-
 
     @authenticated
     def post(self):
@@ -82,12 +90,29 @@ class BankHandler(BaseHandler):
         if not modelInfo:
             self.write_error(404)
 
+        img = self.request.files and self.request.files.get("img", None)[0]
+        if img and len(img['body']) < 40000:
+            import Image
+
+            buff = cStringIO.StringIO()
+            buff.write(img['body'])
+            img_content = img['body'].encode("base64").replace("\n", "")
+            buff.seek(0)
+            temp_img = Image.open(buff)
+            img = dumps({
+                'width': temp_img.size[0],
+                'height': temp_img.size[1],
+                'content': "data:image/{0};base64,{1}".format(temp_img.format.lower(), img_content)
+            })
+
         model = modelInfo[0]
         if self.get_argument("action", None) == "create":
             kwargs = {}
             for item in modelInfo[1]:
                 kwargs[item] = self.get_argument(item, None)
             new_item = model(**kwargs)
+            if img:
+                new_item.img = img
             self.db.add(new_item)
             self.db.commit()
             self.redirect("/admin/bank" if self.get_argument("parent", None) == "root" else
@@ -115,8 +140,11 @@ class BankHandler(BaseHandler):
             for item in modelInfo[1]:
                 setattr(this_item, item, self.get_argument(item, None))
                 kwargs[item] = self.get_argument(item, None)
+            if img:
+                this_item.img = img
             self.db.commit()
             self.redirect("/admin/bank" if self.get_argument("parent", None) == "root" else
-            "/admin/bank?parent={0}&parent_id={1}".format(self.get_argument("parent", ""),
-                                                          self.get_argument("parent_id", "")))
+            "/admin/bank?parent={0}&parent_id={1}".format(
+                self.get_argument("parent", ""),
+                self.get_argument("parent_id", "")))
             return True

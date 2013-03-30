@@ -1,5 +1,5 @@
+PIL
 tornado==2.4.1
 mysql-python
 sqlalchemy
-pyOpenSSL
 markdown

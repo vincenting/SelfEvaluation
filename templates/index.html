@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>SelfEvaluation - 课堂前预习情况自我检测系统</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('css/rest.css') }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ static_url('add-on/blackbox/css/blackbox.css') }}">
+    <script type="text/javascript" src="{{ static_url('add-on/jquery-1.9.1.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/underscore.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/blackbox/js/jquery.blackbox.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('add-on/jquery.placeholder.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/common.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/index.js') }}"></script>
+</head>
+<body>
+
+<div id="wrap">
+    {% if current_section %}
+    <div id="header">
+        <h1>亲爱的{{ current_user['username'] }}，当前预习进度：{{ current_section.chapter.chapter_name }} - {{
+            current_section.section_name }}</h1>
+    </div>
+
+    <div id="start">
+        {% if not current_user['is_teacher'] %}
+        <button id="startEvaluation">预习答题</button>
+        {% end %}
+        <div class="intro">
+            {% raw current_section.section_introduction %}
+        </div>
+
+    </div>
+    {% else %}
+
+    {% end %}
+</div>
+
+<script id="evaluation_template" type="template">
+    <div id="evaluation_bar">
+        <div id="header_bar">
+            <h2 class="subject">
+                <% print(multi_choice ? '【多选】' : '【单选】') %><%= subject %>：
+            </h2>
+            <% if(img) {
+                var this_img = $.parseJSON(img);
+            %>
+                <img src="<%= this_img.content %>" width="<%= this_img.width %>" height="<%= this_img.height %>" alt="题目配图">
+            <% } %>
+        </div>
+        <ul id="choices_bar">
+            <% var i = 64;
+            _.each(choices, function(choice) {
+            i += 1;%>
+            <li id="<% print(String.fromCharCode(i)) %>_<%= choice.id %>"><% print(String.fromCharCode(i)) %>.
+                <%= choice.content %>
+                <% if(choice.img) {
+                var this_img = $.parseJSON(choice.img);
+                %>
+                <img src="<%= this_img.content %>" width="<%= this_img.width %>" height="<%= this_img.height %>" alt="题目配图">
+                <% } %>
+            </li>
+            <% }) %>
+        </ul>
+        <div id="result_bar">
+            你目前的选择 [<span id="current_choices">暂无</span>]
+            <button id="finishEvaluation"><% print(is_next ? '下一题' : '结 束') %></button>
+        </div>
+    </div>
+</script>
+
+{% module xsrf_form_html() %}
+
+</body>
+</html>

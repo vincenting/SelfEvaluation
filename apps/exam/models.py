@@ -4,7 +4,7 @@
 __author__ = 'Vincent Ting'
 
 from core.models import BaseModel
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text,UnicodeText
 from sqlalchemy.orm import relationship, backref
 from markdown import markdown
 
@@ -27,7 +27,7 @@ class SectionModel(BaseModel):
     section_name = Column(String(150), nullable=False)
     section_markdown = Column(Text(), nullable=False)
     section_introduction = Column(Text(), nullable=False)
-    section_status = Column(Integer,nullable=False,default=0)
+    section_status = Column(Integer, nullable=False, default=0)
     parent_chapter_id = Column(Integer, ForeignKey('chapters.chapter_id'))
     chapter = relationship("ChapterModel", backref=backref('sections', order_by=section_id))
 
@@ -47,6 +47,7 @@ class SubjectModel(BaseModel):
     subject_content = Column(Text(), nullable=False)
     parent_section_id = Column(Integer, ForeignKey('sections.section_id'))
     section = relationship("SectionModel", backref=backref('subjects', order_by=subject_id))
+    img = Column(UnicodeText, nullable=True)
 
     def __init__(self, subject_content, parent_section_id):
         self.subject_content = subject_content
@@ -63,8 +64,9 @@ class ChoiceModel(BaseModel):
     choice_correct = Column(Boolean, default=False, nullable=False)
     parent_subject_id = Column(Integer, ForeignKey('subjects.subject_id'))
     subject = relationship("SubjectModel", backref=backref('choices', order_by=choice_id))
+    img = Column(UnicodeText, nullable=True)
 
-    def __init__(self, choice_content, parent_subject_id,choice_correct):
+    def __init__(self, choice_content, parent_subject_id, choice_correct):
         self.choice_content = choice_content
         self.parent_subject_id = parent_subject_id
         self.choice_correct = choice_correct

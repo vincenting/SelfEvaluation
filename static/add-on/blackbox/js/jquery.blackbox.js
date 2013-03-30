@@ -246,16 +246,20 @@
      * 自定义弹出内容
      * @param html
      * @param _delay_appear
-     * @returns {*|jQuery|HTMLElement}
+     * @param callback
      */
-    BlackBox.fn.popup = function (html, _delay_appear) {
-        if (arguments.length === 0) return $W;
-        if (!_setOverlay.call(this, 'popup', arguments, _delay_appear) && !_delay_appear) return $W;
+    BlackBox.fn.popup = function (html, callback, _delay_appear) {
+        if (arguments.length === 0) return;
+        callback = callback || $.noop;
+        if (arguments.length === 1) {
+            Array.prototype.push.call(arguments, callback);
+        }
+        if (!_setOverlay.call(this, 'popup', arguments, _delay_appear) && !_delay_appear)return;
         var $BlackBox = $("#BlackBox");
         $BlackBox.append('<div class="normal" id="popup' + _getNowID.call(this) + '">' + html + '</div>');
         _boxWrap.call(this, $("#popup" + _getNowID.call(this)), {});
         _setOverlayAttr.call(this);
-        return $BlackBox;
+        callback.call(this, $BlackBox);
     };
 
     /**

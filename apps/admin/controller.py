@@ -18,7 +18,7 @@ class AdminHandler(BaseHandler):
 
         current_section = self.db.query(SectionModel).filter(SectionModel.section_status == 1).first()
 
-        if self.get_argument("action",None) == "current_rest":
+        if self.get_argument("action", None) == "current_rest":
             if current_section:
                 current_section.section_status = 2
                 self.db.commit()
@@ -35,10 +35,10 @@ class AdminHandler(BaseHandler):
             self.write_error(403)
             return True
 
-        if self.get_argument("action",None) == "set_current":
+        if self.get_argument("action", None) == "set_current":
             current_section = self.db.query(SectionModel).filter(SectionModel.section_status == 1).first()
             if not current_section:
-                new_section = self.get_argument("current_section",None)
+                new_section = self.get_argument("current_section", None)
                 if new_section:
                     self.db.query(SectionModel).get(new_section).section_status = 1
                     self.db.commit()

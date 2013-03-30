@@ -27,7 +27,7 @@ if 'VCAP_SERVICES' in os.environ:
 
 else:
     define("debug", default=True, help="debug mode", type=bool)
-    define("db_host", default="localhost", help="mysql server")
+    define("db_host", default="127.0.0.1", help="mysql server")
     define("db_name", default="preview_exam", help="database name")
     define("db_user", default="root", help="database user")
     define("db_pass", default="930309", help="database password")

@@ -29,7 +29,7 @@
 
 <p>{{ '新建' if not item else '更新' }} 选项</p>
 
-<form class="form-horizontal" action="" method="post">
+<form class="form-horizontal" action="" enctype="multipart/form-data" method="post">
 
     {% if item %}
     <input type="hidden" name="parent_id" value="{{ item.subject.subject_id }}">
@@ -54,6 +54,16 @@
 
         <div class="controls">
             <input type="checkbox" id="choice_correct" name="choice_correct" value="1">
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="subject_img">题目配图</label>
+        {% if img %}
+        <img style="margin: 5px 20px" src="{{ img['content'] }}" width="{{ img['width'] }}" height="{{ img['height'] }}">
+        {% end %}
+        <div class="controls">
+            <input type="file" id="subject_img" class="input-block-level" name="img">
         </div>
     </div>
 

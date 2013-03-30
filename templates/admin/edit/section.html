@@ -12,7 +12,8 @@
             class="divider">/</span></li>
     {% end %}
     {% if item %}
-    <li><a href="?parent=chapter&parent_id={{ item.section.chapter.chapter_id }}">{{ item.section.chapter.chapter_name }}</a> <span
+    <li><a href="?parent=chapter&parent_id={{ item.section.chapter.chapter_id }}">{{ item.section.chapter.chapter_name
+        }}</a> <span
             class="divider">/</span></li>
     <li><a href="?parent=section&parent_id={{ item.section.section_id }}">{{ item.section.section_name }}</a> <span
             class="divider">/</span></li>
@@ -22,7 +23,7 @@
 
 <p>{{ '新建' if not item else '更新' }} 题目</p>
 
-<form class="form-horizontal" action="" method="post">
+<form class="form-horizontal" action="" enctype="multipart/form-data" method="post">
 
     {% if item %}
     <input type="hidden" name="parent_id" value="{{ item.section.section_id }}">
@@ -39,6 +40,16 @@
         <div class="controls">
             <textarea class="input-block-level" id="subject_content" rows="5" required name="subject_content"
                       placeholder="题目内容">{{ item.subject_content if item else '' }}</textarea>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="subject_img">题目配图</label>
+        {% if img %}
+        <img style="margin: 5px 20px" src="{{ img['content'] }}" width="{{ img['width'] }}" height="{{ img['height'] }}">
+        {% end %}
+        <div class="controls">
+            <input type="file" id="subject_img" class="input-block-level" name="img">
         </div>
     </div>
 

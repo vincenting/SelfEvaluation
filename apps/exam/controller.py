@@ -4,7 +4,7 @@
 __author__ = 'Vincent Ting'
 
 from core.web import BaseHandler
-from apps.exam.models import SectionModel, ChoiceModel, SubjectModel
+from apps.exam.models import *
 import random
 import json
 
@@ -27,10 +27,35 @@ class IndexHandler(BaseHandler):
             subjects = current_section.subjects
             if not subjects:
                 return True
+            study_result = self.db.query(StudyRecordModel).filter(
+                StudyRecordModel.parent_section_id == current_section.section_id,
+                StudyRecordModel.parent_user_id == self.get_current_user()['user_id']).first()
+            if study_result:
+                self.write("Finish")
+                return True
+
+            loaded_subjects = self.db.query(ChoiceRecordModel).filter(
+                ChoiceRecordModel.parent_section_id == current_section.section_id,
+                ChoiceRecordModel.parent_user_id == self.get_current_user()['user_id']).all()
+
             result = []
-            subject_ids = [subject.subject_id for subject in subjects]
-            random.shuffle(subject_ids)
-            subject_ids = subject_ids[0:4]
+            if not len(loaded_subjects):
+                subject_ids = [subject.subject_id for subject in subjects]
+                random.shuffle(subject_ids)
+                subject_ids = subject_ids[0:4]
+                for subject_id in subject_ids:
+                    print subject_id
+                    new_record = ChoiceRecordModel(user_id=self.get_current_user()['user_id'],
+                                                   section_id=current_section.section_id,
+                                                   subject_id=subject_id)
+                    self.db.add(new_record)
+                self.db.commit()
+
+            else:
+                subject_ids = []
+                for subject in loaded_subjects:
+                    subject_ids.append(subject.subject_id)
+
             for subject_id in subject_ids:
                 subject = self.db.query(SubjectModel).get(subject_id)
                 choices = subject.choices
@@ -45,11 +70,11 @@ class IndexHandler(BaseHandler):
                                  'img': choice.img} for choice in
                                 choices]
                 })
-            print result
             self.write(json.dumps(result))
             return True
 
         self.render("index.html", current_section=current_section)
         return True
 
-    post = get
+    def post(self):
+        pass

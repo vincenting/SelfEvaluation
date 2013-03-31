@@ -4,7 +4,7 @@
 __author__ = 'Vincent Ting'
 
 from core.models import BaseModel
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text,UnicodeText
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, UnicodeText
 from sqlalchemy.orm import relationship, backref
 from markdown import markdown
 
@@ -73,3 +73,35 @@ class ChoiceModel(BaseModel):
 
     def __str__(self):
         return "<Choice('{0}')>".format(self.choice_content)
+
+
+class ChoiceRecordModel(BaseModel):
+    __tablename__ = "choice_records"
+    record_id = Column(Integer, primary_key=True)
+    parent_user_id = Column(Integer, ForeignKey('users.user_id'))
+    user = relationship("UserModel", backref=backref('choice_records', order_by=record_id))
+    parent_section_id = Column(Integer, ForeignKey('sections.section_id'))
+    section = relationship("SectionModel", backref=backref('choice_records', order_by=record_id))
+    subject_id = Column(Integer, ForeignKey('subjects.subject_id'))
+    subject = relationship("SubjectModel", backref=backref('choice_records', order_by=record_id))
+    choice_result = Column(Boolean, nullable=True)
+
+    def __init__(self, user_id, section_id, subject_id):
+        self.parent_user_id = user_id
+        self.parent_section_id = section_id
+        self.subject_id = subject_id
+
+
+class StudyRecordModel(BaseModel):
+    __tablename__ = "study_records"
+    record_id = Column(Integer, primary_key=True)
+    parent_user_id = Column(Integer, ForeignKey('users.user_id'))
+    user = relationship("UserModel", backref=backref('study_records', order_by=record_id))
+    parent_section_id = Column(Integer, ForeignKey('sections.section_id'))
+    section = relationship("SectionModel", backref=backref('study_records', order_by=record_id))
+    study_result = Column(String(150), nullable=False)
+
+    def __init__(self, user_id, section_id, result):
+        self.parent_user_id = user_id
+        self.parent_section_id = section_id
+        self.study_result = result

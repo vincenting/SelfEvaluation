@@ -7,7 +7,8 @@
 
     var box = new BlackBox(),
         subjects_queue = [],
-        result_choices = [],
+        result_choices = {},
+        start_time,
         setEvaluation = function (list, callback) {
             if (list.length == 0) {
                 callback = callback || $.noop;
@@ -36,10 +37,7 @@
                     $current_choices.text(current_choices.length ? current_choices.join(", ") : '暂无');
                 });
                 evaluation.find("#finishEvaluation").click(function () {
-                    result_choices.push({
-                        id: current_data.id,
-                        choices: current_ids
-                    });
+                    result_choices[current_data.id]  = current_ids;
                     box.boxClose();
                     setEvaluation(list, callback);
                 });
@@ -49,10 +47,42 @@
     $(document).ready(function () {
         box.load("page");
         box.load("subjects");
+        var sendDataToServer = function (data) {
+            box.load("update");
+            data['_xsrf'] = $("input[name=_xsrf]").val();
+            $.ajax({
+                type: "POST",
+                url: "/",
+                data: data
+            }).done(function (data) {
+                    box.alert("你的作答情况为" + data, function () {
+                        location.reload();
+                    }, {title: "恭喜你作答结束",
+                        value: "结束答题"})
+                }).fail(function () {
+                    box.confirm("网络错误，是否刷新后重试", function (data) {
+                        if (data) {
+                            box.boxClose();
+                            sendDataToServer(data);
+                        }
+                    }, {
+                        title: "网络错误",
+                        value: "重新提交"
+                    })
+                }).always(function () {
+                    box.ready("update");
+                });
+        };
         $("#startEvaluation").click(function () {
-            setEvaluation(subjects_queue,function(data){
-                console.log(data);
+            start_time = (new Date()).valueOf();
+            setEvaluation(subjects_queue, function (data) {
+                var study_data = {
+                    spend_time: (new Date()).valueOf() - start_time,
+                    choice_data: $.toJSON(data)
+                };
+                sendDataToServer(study_data);
             });
+
         });
 
     });
@@ -62,7 +92,11 @@
         url: "/?get=subjects"
     }).done(function (data) {
             if (!data)return;
-            subjects_queue = $.parseJSON(data);
+            if(data == "Finish"){
+                $("#startEvaluation").fadeOut();
+            }else{
+                subjects_queue = $.parseJSON(data);
+            }
         }).always(function () {
             box.ready("subjects");
         }).fail(function () {

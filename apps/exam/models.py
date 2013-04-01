@@ -4,9 +4,10 @@
 __author__ = 'Vincent Ting'
 
 from core.models import BaseModel
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, UnicodeText
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Text, UnicodeText, DateTime
 from sqlalchemy.orm import relationship, backref
 from markdown import markdown
+from datetime import datetime
 
 
 class ChapterModel(BaseModel):
@@ -84,7 +85,7 @@ class ChoiceRecordModel(BaseModel):
     section = relationship("SectionModel", backref=backref('choice_records', order_by=record_id))
     subject_id = Column(Integer, ForeignKey('subjects.subject_id'))
     subject = relationship("SubjectModel", backref=backref('choice_records', order_by=record_id))
-    choice_result = Column(Boolean, nullable=True)
+    choice_result = Column(Boolean, default=False)
 
     def __init__(self, user_id, section_id, subject_id):
         self.parent_user_id = user_id
@@ -99,9 +100,12 @@ class StudyRecordModel(BaseModel):
     user = relationship("UserModel", backref=backref('study_records', order_by=record_id))
     parent_section_id = Column(Integer, ForeignKey('sections.section_id'))
     section = relationship("SectionModel", backref=backref('study_records', order_by=record_id))
+    start_data = Column(DateTime, nullable=False, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    spend_time = Column(String(150), nullable=False)
     study_result = Column(String(150), nullable=False)
 
-    def __init__(self, user_id, section_id, result):
+    def __init__(self, user_id, section_id, spend_time,result):
         self.parent_user_id = user_id
         self.parent_section_id = section_id
         self.study_result = result
+        self.spend_time = spend_time

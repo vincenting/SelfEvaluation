@@ -47,18 +47,37 @@
     <tbody>
     <tr>
         <th>当前完成预习人数</th>
-        <th>20/30</th>
+        <th>{{ finish_number }}</th>
         <th>当前总预习正确率</th>
-        <th>50%</th>
-    </tr>
-    <tr>
-        <th>当前预习发帖总数</th>
-        <th>3</th>
-        <th>当前预习回帖总数</th>
-        <th>13</th>
+        <th>{{ total_result }}</th>
     </tr>
     </tbody>
 </table>
+<div class="well well-small">
+    详细作答列表
+</div>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th>姓名</th>
+        <th>学号</th>
+        <th>正确率</th>
+        <th>完成时间</th>
+        <th>答题耗时</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for record in all_record %}
+    <tr>
+        <th>{{ record.user.username }}</th>
+        <th>{{ record.user.ccnu_id }}</th>
+        <th>{{ record.study_result }}</th>
+        <th>{{ record.start_data }}</th>
+        <th>{{ record.spend_time }} 毫秒</tr>
+    {% end %}
+    </tbody>
+</table>
+
 {% end %}
 
 <script type="text/javascript">

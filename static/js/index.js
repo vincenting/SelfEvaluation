@@ -47,7 +47,7 @@
     $(document).ready(function () {
         box.load("page");
         box.load("subjects");
-        var sendDataToServer = function (data) {
+        var sendDataToServer = function (study_data) {
             box.load("update");
             data['_xsrf'] = $("input[name=_xsrf]").val();
             $.ajax({
@@ -60,10 +60,10 @@
                     }, {title: "恭喜你作答结束",
                         value: "结束答题"})
                 }).fail(function () {
-                    box.confirm("网络错误，是否刷新后重试", function (data) {
-                        if (data) {
+                    box.confirm("网络错误，是否刷新后重试", function (again) {
+                        if (again) {
                             box.boxClose();
-                            sendDataToServer(data);
+                            sendDataToServer(study_data);
                         }
                     }, {
                         title: "网络错误",
@@ -94,6 +94,9 @@
             if (!data)return;
             if(data == "Finish"){
                 $("#startEvaluation").fadeOut();
+                box.alert("您已经完成当前章节的学习",{
+                    title:'预习完成'
+                })
             }else{
                 subjects_queue = $.parseJSON(data);
             }

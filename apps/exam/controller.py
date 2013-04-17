@@ -15,6 +15,10 @@ class IndexHandler(BaseHandler):
             self.render("login.html")
             return True
 
+        if self.get_current_user()['is_teacher']:
+            self.redirect('/admin')
+            return True
+
         if self.get_argument("redirect", None):
             self.redirect(self.get_argument("redirect"))
             return True
@@ -41,7 +45,7 @@ class IndexHandler(BaseHandler):
             if not len(loaded_subjects):
                 subject_ids = [subject.subject_id for subject in subjects]
                 random.shuffle(subject_ids)
-                subject_ids = subject_ids[0:4]
+                subject_ids = subject_ids[0:8] if len(subject_ids) > 8 else subject_ids
                 for subject_id in subject_ids:
                     print subject_id
                     new_record = ChoiceRecordModel(user_id=self.get_current_user()['user_id'],
@@ -116,12 +120,12 @@ class IndexHandler(BaseHandler):
         self.db.add(record)
         self.db.commit()
         if result == 1:
-            result = "优"
+            result = "优，全部答对了！"
         elif result > .7:
-            result = "良"
+            result = "良，多数题目都答对了"
         elif result > .5:
-            result = "及格"
+            result = "及格，答对了一半"
         else:
-            result = "有待提高"
+            result = "有待提高，很多题目都答错了"
         self.write(result)
         return True

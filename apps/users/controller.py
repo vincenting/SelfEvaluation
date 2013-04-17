@@ -23,11 +23,6 @@ def loginDo(handler):
     handler.write("0")
 
 
-def logoutDo(handler):
-    handler.userHandler.logout()
-    handler.write("1")
-
-
 def registerDo(handler):
     (email, ccnu_id, password, class_key) = (
         handler.get_argument("email", None),
@@ -69,6 +64,7 @@ def restPasswordDo(handler):
 
 
 def changePasswordDo(handler):
+    handler.write("")
     pass
 
 
@@ -84,8 +80,16 @@ class AccountHandler(BaseHandler):
         {
             'login': loginDo,
             'register': registerDo,
-            'logout': logoutDo,
             'restPassword': restPasswordDo,
         }.get(self.get_argument("action", None),
               lambda x: self.write(""))(self)
         return True
+
+
+class LogoutHandler(BaseHandler):
+    def get(self):
+        self.userHandler.logout()
+        self.redirect("/")
+        return True
+
+    post = get
